@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" > 
+<!-- 告诉系统这个urdf使用xacro这个宏语言了 -->  
+<!-- 该文件会作为子文件被引入，在其他文件设置一次即可，这里无需设置name -->
+    <xacro:include filename="$(find fishbot_description)/urdf/fishbot/common_inertia.xacro"/>
+    <xacro:macro name = "caster_xacro" params="caster_name xyz">
+        <link name="${caster_name}_link">
+        <!-- ${ } 是 xacro 宏的参数替换语法 -->
+            <visual>
+                <origin xyz="0.0 0.0 0.0" rpy="0 0.0 0.0"/>
+                <geometry>
+                <!-- 球形，半径1.6cm -->
+                    <sphere radius="0.016"/>
+                </geometry>
+                <material name="yellow">
+                    <!-- rgba分别表示红、绿、蓝和不透明度，1.0表示不透明，0.5表示半透明 -->
+                    <color rgba="1.0 1.0 0.0 0.8"/>
+                </material>
+            </visual>
+            <collision>
+                <origin xyz="0.0 0.0 0.0" rpy="0 0.0 0.0"/>
+                <geometry>
+                <!-- 球形，半径1.6cm -->
+                    <sphere radius="0.016"/>
+                </geometry>
+                <material name="yellow">
+                    <!-- rgba分别表示红、绿、蓝和不透明度，1.0表示不透明，0.5表示半透明 -->
+                    <color rgba="1.0 1.0 0.0 0.8"/>
+                </material>
+            </collision>
+            <xacro:sphere_inertia m="0.05" r = "0.016" />
+        </link>
+
+        <!-- 机器人的关节，用于组合机器人的部件 -->
+        <joint name="${caster_name}_joint" type="fixed">
+            <!-- 父部件 -->
+            <parent link="base_link"/>
+            <!-- 子部件 -->
+            <child link="${caster_name}_link"/>
+            <origin xyz="${xyz}" rpy="0.0 0.0 0.0"/>
+        </joint>
+
+        <gazebo reference="${caster_name}_link">
+            <!-- 切向摩擦系数 -->
+            <mu1 value="0.00"/>
+            <!-- 法向摩擦系数 -->
+            <mu2 value="0.0"/>
+            <!-- 接触刚度系数 -->
+            <kp value="1000000000.0"/>
+            <!-- 阻尼系数 -->
+            <kd value="1.0"/>
+        </gazebo>
+    </xacro:macro>
+</robot>

@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" > 
+<!-- 告诉系统这个urdf使用xacro这个宏语言了 -->  
+<!-- 该文件会作为子文件被引入，在其他文件设置一次即可，这里无需设置name -->
+    <xacro:include filename="$(find fishbot_description)/urdf/fishbot/common_inertia.xacro"/>
+    <xacro:macro name = "camera_xacro" params="xyz">
+        <!-- 机器人相机 -->
+        <link name="camera_link">
+        <!-- ${ } 是 xacro 宏的参数替换语法 -->
+            <visual>
+                <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+                <geometry>
+                    <box size="0.02 0.10 0.02"/>
+                </geometry>
+                <material name="black">
+                <!-- rgba分别表示红、绿、蓝和不透明度，1.0表示不透明，0.5表示半透明 -->
+                    <color rgba="0.0 0.0 0.0 0.5"/>
+                </material>
+            </visual>
+            <collision>
+                <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+                <geometry>
+                    <box size="0.02 0.10 0.02"/>
+                </geometry>
+                <material name="black">
+                <!-- rgba分别表示红、绿、蓝和不透明度，1.0表示不透明，0.5表示半透明 -->
+                    <color rgba="0.0 0.0 0.0 0.5"/>
+                </material>
+            </collision>
+            <xacro:box_inertia m="0.1" w="0.02" h="0.10" d="0.02" />
+        </link>
+
+        <link name="camera_optical_link"/>
+
+        <!-- 机器人的关节，用于组合机器人的部件 -->
+        <joint name="camera_joint" type="fixed">
+            <!-- 父部件 -->
+            <parent link="base_link"/>
+            <!-- 子部件 -->
+            <child link="camera_link"/>
+            <origin xyz="${xyz}" rpy="0.0 0.0 0.0"/>
+        </joint>
+        <joint name="camera_optical_joint" type="fixed">
+            <!-- 父部件 -->
+            <parent link="camera_link"/>
+            <!-- 子部件 -->
+            <child link="camera_optical_link"/>
+            <origin xyz="0 0 0 " rpy="${-pi/2} 0.0 ${-pi/2}"/>
+            <!-- pi是180°，pi/2就是90° -->
+        </joint>
+    </xacro:macro>
+</robot>

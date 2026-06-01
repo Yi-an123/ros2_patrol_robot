@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro"> 
+<!-- 告诉系统这个urdf使用xacro这个宏语言了 -->
+<!-- 该文件会作为子文件被引入，在其他文件设置一次即可，这里无需设置name -->
+    <xacro:include filename="$(find fishbot_description)/urdf/fishbot/common_inertia.xacro"/>
+    <!-- 添加导入及对描述了惯性矩阵的宏的调用 -->
+    <xacro:macro name = "base_xacro" params="length radius">
+        <link name="base_footprint" />
+
+        <!-- 机器人身体部分 -->
+        <link name="base_link">
+            <!-- 部件外观描述 -->
+            <visual>
+                <!-- 沿自己几何中心的偏移与旋转量 -->
+                <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+                <!-- 几何形状 -->
+                <geometry>
+                    <!-- 圆柱体，半径为0.10m，高度为0.12m -->
+                    <cylinder radius="${radius}" length="${length}"/>
+                </geometry>
+                <!-- 材质子标签 - 白色 -->
+                <material name = "white">
+                    <!-- rgba分别表示红、绿、蓝和不透明度，1.0表示不透明，0.5表示半透明 -->
+                    <color rgba="1.0 1.0 1.0 0.5"/>  
+                </material>
+            </visual>
+            <collision>
+                <!-- 沿自己几何中心的偏移与旋转量 -->
+                <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+                <!-- 几何形状 -->
+                <geometry>
+                    <!-- 圆柱体，半径为0.10m，高度为0.12m -->
+                    <cylinder radius="${radius}" length="${length}"/>
+                </geometry>
+                <!-- 材质子标签 - 白色 -->
+                <material name = "white">
+                    <!-- rgba分别表示红、绿、蓝和不透明度，1.0表示不透明，0.5表示半透明 -->
+                    <color rgba="1.0 1.0 1.0 0.5"/>  
+                </material>
+            </collision>
+
+            <xacro:cylinder_inertia m="1.0" r = "${radius}" h="${length}" />
+        </link>
+        <joint name="joint_name" type="fixed">
+            <!-- 父部件 -->
+            <parent link="base_footprint"/>
+            <!-- 子部件 -->
+            <child link="base_link"/>
+            <!-- ${length/2.0+0.032}就是轮子底部与地面的距离，但是太贴合也不好，所以减去1mm -->
+            <origin xyz="0.0 0.0 ${length/2.0+0.032-0.001}" rpy="0.0 0.0 0.0"/>
+        </joint>
+    </xacro:macro>
+</robot>

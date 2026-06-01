@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" > 
+<!-- 告诉系统这个urdf使用xacro这个宏语言了 -->  
+<!-- 该文件会作为子文件被引入，在其他文件设置一次即可，这里无需设置name -->
+    <xacro:include filename="$(find fishbot_description)/urdf/fishbot/common_inertia.xacro"/>
+    <xacro:macro name = "imu_xacro" params="xyz">
+    <!-- 当只需要一个部件时，参数无需加imu_name -->
+        <!-- 机器人 IMU 部件 -->
+        <link name="imu_link">
+        <!-- ${ } 是 xacro 宏的参数替换语法 -->
+            <visual>
+                <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+                <geometry>
+                    <box size="0.02 0.02 0.02"/>
+                </geometry>
+                <material name="black">
+                    <!-- rgba分别表示红、绿、蓝和不透明度，1.0表示不透明，0.5表示半透明 -->
+                    <color rgba="0.0 0.0 0.0 0.5"/>
+                </material>
+            </visual>
+            <collision>
+                <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+                <geometry>
+                    <box size="0.02 0.02 0.02"/>
+                </geometry>
+                <material name="black">
+                    <!-- rgba分别表示红、绿、蓝和不透明度，1.0表示不透明，0.5表示半透明 -->
+                    <color rgba="0.0 0.0 0.0 0.5"/>
+                </material>
+            </collision>
+            <xacro:box_inertia m="0.05" w="0.02" h="0.02" d="0.02" />
+
+        </link>
+
+        <!-- 机器人的关节，用于组合机器人的部件 -->
+        <joint name="imu_joint" type="fixed">
+            <!-- 父部件 -->
+            <parent link="base_link"/>
+            <!-- 子部件 -->
+            <child link="imu_link"/>
+            <!-- z0.03 相当于其几何中心向上3cm -->
+            <origin xyz="${xyz}" rpy="0.0 0.0 0.0"/>
+        </joint>
+    </xacro:macro>
+</robot>
